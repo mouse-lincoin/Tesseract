@@ -1,5 +1,6 @@
 import { companiesRepo } from '../db'
 import type { WatchlistCompany } from '../types'
+import { ensureResearchMeta } from './research'
 
 function now(): string {
   return new Date().toISOString()
@@ -24,6 +25,7 @@ export async function addCompany(name: string): Promise<WatchlistCompany> {
     updatedAt: t,
   }
   await companiesRepo.put(company)
+  await ensureResearchMeta(company.id)
   return company
 }
 
@@ -35,6 +37,7 @@ export async function startInvestigation(id: string): Promise<WatchlistCompany> 
   company.status = 'investigating'
   company.updatedAt = now()
   await companiesRepo.put(company)
+  await ensureResearchMeta(company.id)
   return company
 }
 

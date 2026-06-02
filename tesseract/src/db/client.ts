@@ -1,6 +1,12 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
-import type { WatchlistCompany } from '../types'
-import type { SettingEntry } from '../types'
+import type {
+  Citation,
+  Evidence,
+  ResearchMeta,
+  SettingEntry,
+  TrustedSource,
+  WatchlistCompany,
+} from '../types'
 import { DB_NAME, DB_VERSION, STORES, type IndexedStoreName, type StoreName } from './schema'
 
 export interface TesseractDB extends DBSchema {
@@ -13,6 +19,25 @@ export interface TesseractDB extends DBSchema {
     key: string
     value: SettingEntry
   }
+  evidence: {
+    key: string
+    value: Evidence
+    indexes: { companyId: string; stage: string }
+  }
+  citations: {
+    key: string
+    value: Citation
+    indexes: { companyId: string }
+  }
+  trusted_sources: {
+    key: string
+    value: TrustedSource
+    indexes: { companyId: string }
+  }
+  research_meta: {
+    key: string
+    value: ResearchMeta
+  }
 }
 
 let dbPromise: Promise<IDBPDatabase<TesseractDB>> | null = null
@@ -21,14 +46,32 @@ export function getDb(): Promise<IDBPDatabase<TesseractDB>> {
   if (!dbPromise) {
     dbPromise = openDB<TesseractDB>(DB_NAME, DB_VERSION, {
       upgrade(db, oldVersion) {
-        if (oldVersion < 4) {
+        if (oldVersion < 5) {
           for (const name of Array.from(db.objectStoreNames)) {
-            db.deleteObjectStore(name)
+            if (name !== STORES.settings) {
+              db.deleteObjectStore(name)
+            }
           }
         }
         if (!db.objectStoreNames.contains(STORES.companies)) {
           const companies = db.createObjectStore(STORES.companies, { keyPath: 'id' })
           companies.createIndex('status', 'status', { unique: false })
+        }
+        if (!db.objectStoreNames.contains(STORES.evidence)) {
+          const evidence = db.createObjectStore(STORES.evidence, { keyPath: 'id' })
+          evidence.createIndex('companyId', 'companyId', { unique: false })
+          evidence.createIndex('stage', 'stage', { unique: false })
+        }
+        if (!db.objectStoreNames.contains(STORES.citations)) {
+          const citations = db.createObjectStore(STORES.citations, { keyPath: 'id' })
+          citations.createIndex('companyId', 'companyId', { unique: false })
+        }
+        if (!db.objectStoreNames.contains(STORES.trusted_sources)) {
+          const sources = db.createObjectStore(STORES.trusted_sources, { keyPath: 'id' })
+          sources.createIndex('companyId', 'companyId', { unique: false })
+        }
+        if (!db.objectStoreNames.contains(STORES.research_meta)) {
+          db.createObjectStore(STORES.research_meta, { keyPath: 'companyId' })
         }
         if (!db.objectStoreNames.contains(STORES.settings)) {
           db.createObjectStore(STORES.settings, { keyPath: 'key' })

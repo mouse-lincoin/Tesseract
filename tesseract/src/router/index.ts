@@ -11,7 +11,12 @@ const router = createRouter({
     {
       path: '/company/:id',
       name: 'company',
-      component: () => import('../views/CompanyPlaceholderView.vue'),
+      component: () => import('../views/ResearchWorkbenchView.vue'),
+    },
+    {
+      path: '/sources',
+      name: 'sources',
+      component: () => import('../views/SourcesView.vue'),
     },
   ],
 })
