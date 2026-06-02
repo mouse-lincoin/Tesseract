@@ -1,5 +1,13 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
-import type { AnalysisRecord, Company, MetricSeries, Rule, SettingEntry } from '../types'
+import type {
+  AnalysisRecord,
+  Company,
+  DiscussionMessage,
+  MetricSeries,
+  Rule,
+  SettingEntry,
+  WatchlistItem,
+} from '../types'
 import { DB_NAME, DB_VERSION, STORES, type IndexedStoreName, type StoreName } from './schema'
 
 export interface TesseractDB extends DBSchema {
@@ -26,6 +34,16 @@ export interface TesseractDB extends DBSchema {
   settings: {
     key: string
     value: SettingEntry
+  }
+  watchlist: {
+    key: string
+    value: WatchlistItem
+    indexes: { companyId: string }
+  }
+  messages: {
+    key: string
+    value: DiscussionMessage
+    indexes: { watchlistId: string }
   }
 }
 
@@ -55,6 +73,14 @@ export function getDb(): Promise<IDBPDatabase<TesseractDB>> {
         }
         if (!db.objectStoreNames.contains(STORES.settings)) {
           db.createObjectStore(STORES.settings, { keyPath: 'key' })
+        }
+        if (!db.objectStoreNames.contains(STORES.watchlist)) {
+          const watchlist = db.createObjectStore(STORES.watchlist, { keyPath: 'id' })
+          watchlist.createIndex('companyId', 'companyId', { unique: false })
+        }
+        if (!db.objectStoreNames.contains(STORES.messages)) {
+          const messages = db.createObjectStore(STORES.messages, { keyPath: 'id' })
+          messages.createIndex('watchlistId', 'watchlistId', { unique: false })
         }
       },
     })

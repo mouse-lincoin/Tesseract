@@ -65,3 +65,5 @@ export const TREND_LABELS: Record<TrendDirection, string> = {
   stable: '基本持平',
   worsening: '持续恶化',
 }
+
+export * from './research'

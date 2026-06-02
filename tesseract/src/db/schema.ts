@@ -1,5 +1,5 @@
 export const DB_NAME = 'tesseract-db'
-export const DB_VERSION = 1
+export const DB_VERSION = 2
 
 export const STORES = {
   rules: 'rules',
@@ -7,6 +7,8 @@ export const STORES = {
   metrics: 'metrics',
   analyses: 'analyses',
   settings: 'settings',
+  watchlist: 'watchlist',
+  messages: 'messages',
 } as const
 
 export type StoreName = (typeof STORES)[keyof typeof STORES]
