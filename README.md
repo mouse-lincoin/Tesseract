@@ -4,7 +4,9 @@
 
 研究员的**观察名单**：把公司列入清单，准备好后再**开始深入调查**。
 
-完整需求见 [PRD.md](./PRD.md)。Agent 协作约定见 [AGENTS.md](./AGENTS.md)。
+- 产品需求：[PRD.md](./PRD.md)  
+- 深入调查设计（Loop / 证据 / 信源库）：[docs/RESEARCH_DESIGN.md](./docs/RESEARCH_DESIGN.md)  
+- Agent 约定：[AGENTS.md](./AGENTS.md)
 
 ---
 
