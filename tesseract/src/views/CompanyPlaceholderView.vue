@@ -21,7 +21,6 @@ onMounted(async () => {
 
     <template v-if="company">
       <h2>{{ company.name }}</h2>
-      <p class="meta">{{ company.code }} · {{ company.market }}</p>
       <p class="status">当前状态：{{ STATUS_LABELS[company.status] }}</p>
       <div class="card-surface note">
         <p>公司详情页尚未设计，后续会在这里展开研究过程与结论。</p>
@@ -47,7 +46,6 @@ onMounted(async () => {
 h2 {
   margin: 0 0 8px;
 }
-.meta,
 .status {
   color: var(--tesseract-muted);
   margin: 0 0 8px;

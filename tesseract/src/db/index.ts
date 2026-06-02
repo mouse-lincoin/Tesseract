@@ -17,7 +17,7 @@ export interface DatabaseExport {
 export async function exportDatabase(): Promise<DatabaseExport> {
   const settings = await storageClient.getAll<{ key: string; value: unknown }>(STORES.settings)
   return {
-    version: 3,
+    version: 4,
     exportedAt: new Date().toISOString(),
     companies: await companiesRepo.getAll(),
     settings,
