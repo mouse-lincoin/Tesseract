@@ -54,48 +54,34 @@
 
 ## 🚀 Quick Start
 
-> ⚠️ 项目处于概念 / 文档阶段，下述命令为规划中的目标用法，代码尚未实现。
+前端 MVP 已实现，见 [`tesseract/`](./tesseract/) 目录：
 
 ```bash
-git clone <repo-url>
 cd tesseract
-pip install -r requirements.txt
-
-# 围绕关键限制因素做一次推演（A 股 / 港股标的）
-tesseract analyze "金蝶国际"
-tesseract analyze 0268.HK
+npm install
+npm run dev
 ```
 
-预期输出：
-
-```
-公司：金蝶国际 (0268.HK)
-关键限制因素：客户流失（SaaS 的生死线，代理指标 = NDR 净收入留存率）
-近 5 年 NDR 趋势：105% → 109% → 112% → 114% → 113%
-─────────────────────────────────────────────
-预测：NDR 长期向 115% 靠拢但尚未稳固，"客户流失"这一关键限制
-      正在缓慢改善，短期内仍难以被彻底解决。
-```
+浏览器打开开发地址后，在分析页输入 **金蝶国际** 或 **0268.HK** 即可体验主链路（内置 SaaS 规则与示例 NDR 数据，存于 IndexedDB）。
 
 ---
 
-## 📂 目录结构（规划中）
+## 📂 目录结构
 
 ```
-tesseract/
-├── Axiom_RuleBase/     # 公理库：各行业关键限制因素规则（JSON/YAML）
-├── Data_Sniper/        # 数据狙击手：第三方免费 API + 代理指标推算
-├── Forecast_Core/      # 预测推演引擎：时序趋势 + 解决前景预测
-├── ui/                 # 极简深色界面（C 端）
-├── PRD.md
-└── README.md
+├── PRD.md              # 产品需求文档
+├── README.md           # 本文件
+└── tesseract/          # Vue 3 前端 MVP（见 tesseract/README.md）
+    ├── src/modules/    # axiom / sniper / forecast 业务模块
+    ├── src/db/         # IndexedDB 仓储封装
+    └── src/views/      # 分析 / 规则 / 数据录入
 ```
 
 ---
 
 ## 🛣️ Roadmap
 
-- [ ] **Phase 1 — MVP：** A 股/港股 + SaaS，内置 1 条关键限制因素规则，跑通"输入 → 推导 → 预测" + 极简 UI（免费）。
+- [x] **Phase 1 — MVP：** A 股/港股 + SaaS，内置 1 条关键限制因素规则，跑通"输入 → 推导 → 预测" + 极简 UI（免费）。
 - [ ] **Phase 2 — 扩行业：** 公理库扩至 3–5 个行业，支持复合行业多限制推演与自动采集。
 - [ ] **Phase 3 — 规模化：** 公理库可视化后台，探索付费能力，评估扩展更多市场。
 
