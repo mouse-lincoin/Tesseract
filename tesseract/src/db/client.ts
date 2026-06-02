@@ -1,49 +1,17 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
-import type {
-  AnalysisRecord,
-  Company,
-  DiscussionMessage,
-  MetricSeries,
-  Rule,
-  SettingEntry,
-  WatchlistItem,
-} from '../types'
+import type { WatchlistCompany } from '../types'
+import type { SettingEntry } from '../types'
 import { DB_NAME, DB_VERSION, STORES, type IndexedStoreName, type StoreName } from './schema'
 
 export interface TesseractDB extends DBSchema {
-  rules: {
-    key: string
-    value: Rule
-    indexes: { industry: string }
-  }
   companies: {
     key: string
-    value: Company
-    indexes: { code: string; name: string }
-  }
-  metrics: {
-    key: string
-    value: MetricSeries
-    indexes: { companyId: string; metricKey: string }
-  }
-  analyses: {
-    key: string
-    value: AnalysisRecord
-    indexes: { companyId: string }
+    value: WatchlistCompany
+    indexes: { code: string; status: string }
   }
   settings: {
     key: string
     value: SettingEntry
-  }
-  watchlist: {
-    key: string
-    value: WatchlistItem
-    indexes: { companyId: string }
-  }
-  messages: {
-    key: string
-    value: DiscussionMessage
-    indexes: { watchlistId: string }
   }
 }
 
@@ -52,35 +20,19 @@ let dbPromise: Promise<IDBPDatabase<TesseractDB>> | null = null
 export function getDb(): Promise<IDBPDatabase<TesseractDB>> {
   if (!dbPromise) {
     dbPromise = openDB<TesseractDB>(DB_NAME, DB_VERSION, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains(STORES.rules)) {
-          const rules = db.createObjectStore(STORES.rules, { keyPath: 'id' })
-          rules.createIndex('industry', 'industry', { unique: false })
+      upgrade(db, oldVersion) {
+        if (oldVersion < 3) {
+          for (const name of Array.from(db.objectStoreNames)) {
+            db.deleteObjectStore(name)
+          }
         }
         if (!db.objectStoreNames.contains(STORES.companies)) {
           const companies = db.createObjectStore(STORES.companies, { keyPath: 'id' })
           companies.createIndex('code', 'code', { unique: false })
-          companies.createIndex('name', 'name', { unique: false })
-        }
-        if (!db.objectStoreNames.contains(STORES.metrics)) {
-          const metrics = db.createObjectStore(STORES.metrics, { keyPath: 'id' })
-          metrics.createIndex('companyId', 'companyId', { unique: false })
-          metrics.createIndex('metricKey', 'metricKey', { unique: false })
-        }
-        if (!db.objectStoreNames.contains(STORES.analyses)) {
-          const analyses = db.createObjectStore(STORES.analyses, { keyPath: 'id' })
-          analyses.createIndex('companyId', 'companyId', { unique: false })
+          companies.createIndex('status', 'status', { unique: false })
         }
         if (!db.objectStoreNames.contains(STORES.settings)) {
           db.createObjectStore(STORES.settings, { keyPath: 'key' })
-        }
-        if (!db.objectStoreNames.contains(STORES.watchlist)) {
-          const watchlist = db.createObjectStore(STORES.watchlist, { keyPath: 'id' })
-          watchlist.createIndex('companyId', 'companyId', { unique: false })
-        }
-        if (!db.objectStoreNames.contains(STORES.messages)) {
-          const messages = db.createObjectStore(STORES.messages, { keyPath: 'id' })
-          messages.createIndex('watchlistId', 'watchlistId', { unique: false })
         }
       },
     })
@@ -91,11 +43,7 @@ export function getDb(): Promise<IDBPDatabase<TesseractDB>> {
 export interface StorageClient {
   get<T>(store: StoreName, id: string): Promise<T | undefined>
   getAll<T>(store: StoreName): Promise<T[]>
-  queryByIndex<T>(
-    store: IndexedStoreName,
-    index: string,
-    value: IDBValidKey,
-  ): Promise<T[]>
+  queryByIndex<T>(store: IndexedStoreName, index: string, value: IDBValidKey): Promise<T[]>
   put<T>(store: StoreName, item: T): Promise<string>
   delete(store: StoreName, id: string): Promise<void>
   clear(store: StoreName): Promise<void>

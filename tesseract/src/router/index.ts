@@ -9,19 +9,9 @@ const router = createRouter({
       component: () => import('../views/WatchlistView.vue'),
     },
     {
-      path: '/research/:id',
-      name: 'research',
-      component: () => import('../views/ResearchWorkspaceView.vue'),
-    },
-    {
-      path: '/rules',
-      name: 'rules',
-      component: () => import('../views/RulesView.vue'),
-    },
-    {
-      path: '/data',
-      name: 'data',
-      component: () => import('../views/DataView.vue'),
+      path: '/company/:id',
+      name: 'company',
+      component: () => import('../views/CompanyPlaceholderView.vue'),
     },
   ],
 })
