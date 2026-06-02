@@ -1,0 +1,1 @@
+import{h as e}from"./index-DeL-Ewnh.js";var t={apiBaseUrl:`https://api.deepseek.com`,apiKey:``,model:`deepseek-chat`},n=`ai_settings`;async function r(){let r=await e.get(n);return!r?.value||typeof r.value!=`object`?{...t}:{...t,...r.value}}async function i(t){await e.put({key:n,value:t})}function a(e){return!!(e.apiKey.trim()&&e.apiBaseUrl.trim())}export{i,r as n,a as r,t};
