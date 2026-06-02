@@ -10,13 +10,13 @@
 
 ---
 
-## 1. 已实现（MVP）
+## 1. 已实现
 
-1. **加入观察名单**：录入公司名称。
-2. **开始深入调查**：状态 `on_list` → `investigating`。
-3. **公司详情**：占位页（`/company/:id`）。
+1. **观察名单**：录入公司名称 → **开始深入调查**。
+2. **调查工作台**（`/company/:id`）：五阶段 Tab、调研 Loop（定向→收集→推敲→沉淀）、证据卡片 + 引用。
+3. **信源库**（`/sources`）：人类策展优质网址/域名。
 
-技术：Vue 3 + TS + Vite + Element Plus + IndexedDB（`companies`、`settings`）。
+技术：Vue 3 + TS + Vite + Element Plus + IndexedDB v5。
 
 ---
 
@@ -78,8 +78,8 @@
 | 路由 | 状态 |
 | ---- | ---- |
 | `/` | ✅ 观察名单 |
-| `/company/:id` | ✅ 占位 → 🔜 调查中调研工作台 |
-| `/sources` | 🔜 优质信源库（可选全局页） |
+| `/company/:id` | ✅ 调查工作台 |
+| `/sources` | ✅ 信源库 |
 
 ---
 

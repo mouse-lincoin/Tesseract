@@ -1,7 +1,8 @@
 import type { WatchlistCompany } from '../types'
 import { companiesRepo, settingsRepo } from './repositories'
+import { ensureResearchMeta } from '../services/research'
 
-const SEED_KEY = 'seeded_v4'
+const SEED_KEY = 'seeded_v5'
 
 export const SEED_COMPANY: WatchlistCompany = {
   id: 'company-kingdee',
@@ -16,5 +17,6 @@ export async function seedDatabaseIfNeeded(): Promise<void> {
   if (existing?.value === true) return
 
   await companiesRepo.put(SEED_COMPANY)
+  await ensureResearchMeta(SEED_COMPANY.id)
   await settingsRepo.put({ key: SEED_KEY, value: true })
 }
