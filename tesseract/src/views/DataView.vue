@@ -9,6 +9,8 @@ import {
   resetAndSeed,
 } from '../db'
 import type { Company, MetricPoint, MetricSeries, Market } from '../types'
+import type { AiSettings } from '../types/research'
+import { getAiSettings, saveAiSettings } from '../services/aiSettings'
 
 const companies = ref<Company[]>([])
 const metrics = ref<MetricSeries[]>([])
@@ -27,7 +29,14 @@ const metricForm = ref({
   pointsText: '2023,112\n2024,113',
 })
 
+const aiForm = ref<AiSettings>({
+  apiBaseUrl: 'https://api.openai.com/v1',
+  apiKey: '',
+  model: 'gpt-4o-mini',
+})
+
 async function load() {
+  aiForm.value = await getAiSettings()
   companies.value = await companiesRepo.getAll()
   metrics.value = await metricsRepo.getAll()
   if (!selectedCompanyId.value && companies.value[0]) {
@@ -118,14 +127,38 @@ async function resetSeed() {
   await load()
 }
 
+async function saveAi() {
+  await saveAiSettings({ ...aiForm.value })
+  ElMessage.success('AI 配置已保存（仅存于本机 IndexedDB）')
+}
+
 onMounted(load)
 </script>
 
 <template>
   <section class="data-page">
     <p class="intro">
-      MVP 阶段以手动录入与 JSON 导入/导出为主；每个数据点请标注来源，便于预测可解释。
+      指标数据手动录入；研究讨论需配置 AI（OpenAI 兼容接口）。密钥仅存本地，不上传服务器。
     </p>
+
+    <div class="card-surface panel ai-panel">
+      <h3>AI 协作者（研究讨论）</h3>
+      <p class="ai-hint">
+        AI 被设定为<strong>不讨好</strong>的研究搭档：会质疑假设、区分事实与推断，并只建议检索方向（不编造数据）。
+      </p>
+      <el-form label-position="top">
+        <el-form-item label="API Base URL">
+          <el-input v-model="aiForm.apiBaseUrl" placeholder="https://api.openai.com/v1" />
+        </el-form-item>
+        <el-form-item label="API Key">
+          <el-input v-model="aiForm.apiKey" type="password" show-password placeholder="sk-..." />
+        </el-form-item>
+        <el-form-item label="模型">
+          <el-input v-model="aiForm.model" placeholder="gpt-4o-mini" />
+        </el-form-item>
+        <el-button type="primary" @click="saveAi">保存 AI 配置</el-button>
+      </el-form>
+    </div>
 
     <div class="grid">
       <div class="card-surface panel">
@@ -218,6 +251,15 @@ onMounted(load)
 .panel h3 {
   margin: 0 0 16px;
   font-size: 16px;
+}
+.ai-panel {
+  margin-bottom: 16px;
+}
+.ai-hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--tesseract-muted);
+  line-height: 1.6;
 }
 .actions {
   margin-bottom: 20px;

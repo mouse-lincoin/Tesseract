@@ -5,9 +5,9 @@ const route = useRoute()
 const router = useRouter()
 
 const links = [
-  { path: '/', label: '分析' },
-  { path: '/rules', label: '规则' },
-  { path: '/data', label: '数据' },
+  { path: '/', label: '观察名单', match: (p: string) => p === '/' || p.startsWith('/research') },
+  { path: '/rules', label: '规则', match: (p: string) => p === '/rules' },
+  { path: '/data', label: '数据', match: (p: string) => p === '/data' },
 ]
 
 function go(path: string) {
@@ -30,7 +30,7 @@ function go(path: string) {
         :key="link.path"
         type="button"
         class="link"
-        :class="{ active: route.path === link.path }"
+        :class="{ active: link.match(route.path) }"
         @click="go(link.path)"
       >
         {{ link.label }}

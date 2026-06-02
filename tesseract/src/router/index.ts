@@ -5,8 +5,13 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'analyze',
-      component: () => import('../views/AnalyzeView.vue'),
+      name: 'watchlist',
+      component: () => import('../views/WatchlistView.vue'),
+    },
+    {
+      path: '/research/:id',
+      name: 'research',
+      component: () => import('../views/ResearchWorkspaceView.vue'),
     },
     {
       path: '/rules',
