@@ -24,10 +24,8 @@ npm run dev
 
 ### 在线预览（GitHub Pages）
 
-1. **首次（只需一次）：** 仓库 [Settings → Pages](https://github.com/mouse-lincoin/Tesseract/settings/pages)  
-   - **Source** 选 **Deploy from a branch**  
-   - **Branch** 选 `gh-pages`，目录选 **/ (root)**  
-2. 推送 `main` 后 Actions 会自动构建并更新 `gh-pages` 分支；也可在 Actions 里手动 **Run workflow**。
+1. **Settings → Pages：** Source = **Deploy from a branch** → **main** → **/ (root)**  
+2. 推送 `tesseract/` 源码变更后 Actions 会构建并把产物提交到 **main 根目录**（`index.html`、`assets/` 等）。
 
 预览地址：**https://mouse-lincoin.github.io/Tesseract/**
 
