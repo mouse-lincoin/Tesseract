@@ -1,22 +1,14 @@
 import { storageClient } from '../client'
 import { STORES } from '../schema'
 import { createRepository } from './base'
-import type {
-  AnalysisRecord,
-  Company,
-  DiscussionMessage,
-  MetricSeries,
-  Rule,
-  SettingEntry,
-  WatchlistItem,
-} from '../../types'
+import type { WatchlistCompany } from '../../types'
 
-export const rulesRepo = createRepository<Rule>(storageClient, STORES.rules)
-export const companiesRepo = createRepository<Company>(storageClient, STORES.companies)
-export const metricsRepo = createRepository<MetricSeries>(storageClient, STORES.metrics)
-export const analysesRepo = createRepository<AnalysisRecord>(storageClient, STORES.analyses)
-export const watchlistRepo = createRepository<WatchlistItem>(storageClient, STORES.watchlist)
-export const messagesRepo = createRepository<DiscussionMessage>(storageClient, STORES.messages)
+export interface SettingEntry {
+  key: string
+  value: unknown
+}
+
+export const companiesRepo = createRepository<WatchlistCompany>(storageClient, STORES.companies)
 
 export const settingsRepo = {
   async get(key: string): Promise<SettingEntry | undefined> {
