@@ -1,5 +1,5 @@
 import { companiesRepo } from '../db'
-import type { Market, WatchlistCompany } from '../types'
+import type { WatchlistCompany } from '../types'
 
 function now(): string {
   return new Date().toISOString()
@@ -14,17 +14,11 @@ export async function getCompany(id: string): Promise<WatchlistCompany | undefin
   return companiesRepo.get(id)
 }
 
-export async function addCompany(input: {
-  name: string
-  code: string
-  market: Market
-}): Promise<WatchlistCompany> {
+export async function addCompany(name: string): Promise<WatchlistCompany> {
   const t = now()
   const company: WatchlistCompany = {
     id: `company-${Date.now()}`,
-    name: input.name.trim(),
-    code: input.code.trim(),
-    market: input.market,
+    name: name.trim(),
     status: 'on_list',
     createdAt: t,
     updatedAt: t,

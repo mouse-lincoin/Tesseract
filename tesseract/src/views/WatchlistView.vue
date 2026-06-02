@@ -8,37 +8,27 @@ import {
   removeCompany,
   startInvestigation,
 } from '../services/companies'
-import type { Market, WatchlistCompany } from '../types'
+import type { WatchlistCompany } from '../types'
 import { STATUS_LABELS } from '../types'
 
 const router = useRouter()
 const companies = ref<WatchlistCompany[]>([])
 const loading = ref(false)
-
-const form = ref({
-  name: '',
-  code: '',
-  market: '港股' as Market,
-})
+const name = ref('')
 
 async function load() {
   companies.value = await listCompanies()
 }
 
 async function add() {
-  if (!form.value.name.trim() || !form.value.code.trim()) {
-    ElMessage.warning('请填写公司名称与代码')
+  if (!name.value.trim()) {
+    ElMessage.warning('请填写公司名称')
     return
   }
   loading.value = true
   try {
-    await addCompany({
-      name: form.value.name,
-      code: form.value.code,
-      market: form.value.market,
-    })
-    form.value.name = ''
-    form.value.code = ''
+    await addCompany(name.value)
+    name.value = ''
     ElMessage.success('已加入观察名单')
     await load()
   } finally {
@@ -71,24 +61,28 @@ onMounted(load)
 </script>
 
 <template>
-  <section>
+  <section class="page">
     <p class="intro">维护你的<strong>观察名单</strong>。列入之后，再决定是否开始深入调查。</p>
 
     <div class="card-surface add-panel">
-      <h3>加入名单</h3>
-      <div class="form-grid">
-        <el-input v-model="form.name" placeholder="公司名称" />
-        <el-input v-model="form.code" placeholder="股票代码，如 0268.HK" />
-        <el-select v-model="form.market" style="width: 100%">
-          <el-option label="港股" value="港股" />
-          <el-option label="A股" value="A股" />
-        </el-select>
+      <h3 class="panel-title">加入名单</h3>
+      <div class="add-row">
+        <el-input
+          v-model="name"
+          size="large"
+          placeholder="公司名称"
+          clearable
+          @keyup.enter="add"
+        />
+        <el-button type="primary" size="large" :loading="loading" @click="add">
+          加入名单
+        </el-button>
       </div>
-      <el-button type="primary" :loading="loading" @click="add">加入名单</el-button>
     </div>
 
     <h3 class="section-title">观察名单</h3>
-    <el-empty v-if="!companies.length" description="暂无公司" />
+
+    <el-empty v-if="!companies.length" class="empty" description="暂无公司" />
 
     <ul v-else class="list">
       <li v-for="c in companies" :key="c.id" class="item card-surface">
@@ -96,7 +90,6 @@ onMounted(load)
           <button type="button" class="name" @click="openPlaceholder(c.id)">
             {{ c.name }}
           </button>
-          <span class="meta">{{ c.code }} · {{ c.market }}</span>
           <el-tag
             :type="c.status === 'investigating' ? 'warning' : 'info'"
             size="small"
@@ -122,21 +115,39 @@ onMounted(load)
 </template>
 
 <style scoped>
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .intro {
   color: var(--tesseract-muted);
   line-height: 1.7;
-  margin: 0 0 24px;
+  margin: 0;
 }
-.add-panel h3,
-.section-title {
-  margin: 0 0 12px;
+.add-panel {
+  padding: 20px 22px;
+}
+.panel-title {
+  margin: 0 0 16px;
   font-size: 16px;
+  font-weight: 600;
 }
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-  margin-bottom: 12px;
+.add-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+.add-row .el-input {
+  flex: 1;
+}
+.section-title {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.empty {
+  padding: 32px 0;
 }
 .list {
   list-style: none;
@@ -144,38 +155,49 @@ onMounted(load)
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 .item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: wrap;
+  padding: 18px 20px;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
 }
 .name {
   background: none;
   border: none;
   padding: 0;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--tesseract-accent);
   cursor: pointer;
   text-align: left;
-}
-.meta {
-  display: block;
-  color: var(--tesseract-muted);
-  font-size: 13px;
-  margin-top: 4px;
+  line-height: 1.4;
 }
 .status {
-  margin-top: 8px;
+  margin: 0;
 }
 .ops {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 12px;
+  flex-shrink: 0;
+}
+@media (max-width: 520px) {
+  .add-row {
+    flex-direction: column;
+  }
+  .add-row .el-button {
+    width: 100%;
+  }
 }
 </style>

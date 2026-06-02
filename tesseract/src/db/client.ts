@@ -7,7 +7,7 @@ export interface TesseractDB extends DBSchema {
   companies: {
     key: string
     value: WatchlistCompany
-    indexes: { code: string; status: string }
+    indexes: { status: string }
   }
   settings: {
     key: string
@@ -21,14 +21,13 @@ export function getDb(): Promise<IDBPDatabase<TesseractDB>> {
   if (!dbPromise) {
     dbPromise = openDB<TesseractDB>(DB_NAME, DB_VERSION, {
       upgrade(db, oldVersion) {
-        if (oldVersion < 3) {
+        if (oldVersion < 4) {
           for (const name of Array.from(db.objectStoreNames)) {
             db.deleteObjectStore(name)
           }
         }
         if (!db.objectStoreNames.contains(STORES.companies)) {
           const companies = db.createObjectStore(STORES.companies, { keyPath: 'id' })
-          companies.createIndex('code', 'code', { unique: false })
           companies.createIndex('status', 'status', { unique: false })
         }
         if (!db.objectStoreNames.contains(STORES.settings)) {

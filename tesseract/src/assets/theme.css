@@ -32,9 +32,9 @@ a {
 }
 
 .tesseract-layout {
-  max-width: 960px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 24px 20px 48px;
+  padding: 28px 20px 56px;
 }
 
 .tesseract-tagline {
