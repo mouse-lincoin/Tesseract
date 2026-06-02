@@ -22,6 +22,12 @@ npm run dev
 
 浏览器打开开发服务器地址，默认可用示例：**金蝶国际** 或 **0268.HK**。
 
+### 在线预览（GitHub Pages）
+
+推送至 `main` 后由 Actions 自动部署，或于仓库 **Actions → Deploy to GitHub Pages → Run workflow** 手动触发。
+
+预览地址：**https://mouse-lincoin.github.io/Tesseract/**
+
 ## 页面
 
 | 路由 | 功能 |

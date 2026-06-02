@@ -64,6 +64,8 @@ npm run dev
 
 浏览器打开开发地址后，在分析页输入 **金蝶国际** 或 **0268.HK** 即可体验主链路（内置 SaaS 规则与示例 NDR 数据，存于 IndexedDB）。
 
+**在线预览：** https://mouse-lincoin.github.io/Tesseract/（`main` 分支推送后由 GitHub Actions 部署）
+
 ---
 
 ## 📂 目录结构
