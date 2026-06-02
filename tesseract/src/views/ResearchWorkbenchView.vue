@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import EvidenceList from '../components/EvidenceList.vue'
+import AiResearchPanel from '../components/AiResearchPanel.vue'
 import ResearchLoopPanel from '../components/ResearchLoopPanel.vue'
 import { getCompany } from '../services/companies'
 import {
@@ -51,6 +52,11 @@ async function load() {
     activeStage.value = meta.value.currentStage
     await loadEvidence()
   }
+}
+
+async function onAiDone() {
+  meta.value = await ensureResearchMeta(companyId.value)
+  await loadEvidence()
 }
 
 function onTabChange(name: string | number) {
@@ -150,6 +156,12 @@ onMounted(load)
 
         <div class="layout">
           <div class="main-col">
+            <AiResearchPanel
+              :company-id="companyId"
+              :stage="activeStage"
+              :meta="meta"
+              @done="onAiDone"
+            />
             <ResearchLoopPanel
               :company-id="companyId"
               :stage="activeStage"

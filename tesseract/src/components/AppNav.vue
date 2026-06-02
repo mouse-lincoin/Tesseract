@@ -7,6 +7,7 @@ const route = useRoute()
 const links = [
   { path: '/', label: '观察名单', match: (p: string) => p === '/' || p.startsWith('/company') },
   { path: '/sources', label: '信源库', match: (p: string) => p === '/sources' },
+  { path: '/settings', label: 'AI 设置', match: (p: string) => p === '/settings' },
 ]
 </script>
 
