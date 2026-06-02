@@ -39,18 +39,20 @@ jobs:
         run: |
           npm ci
           npm run build:pages
+          # GitHub Pages 对未知路径返回 404；复制 index 供 Vue Router history 模式回退
+          cp dist/index.html dist/404.html
 
       - name: Publish build to repository root
         run: |
           set -euo pipefail
           rm -rf assets
-          rm -f index.html favicon.svg icons.svg .nojekyll
+          rm -f index.html 404.html favicon.svg icons.svg .nojekyll
           # dist/* 不包含 .nojekyll 等隐藏文件，必须用 dist/.
           cp -r tesseract/dist/. .
           touch .nojekyll
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html assets favicon.svg icons.svg .nojekyll
+          git add index.html 404.html assets favicon.svg icons.svg .nojekyll
           if git diff --staged --quiet; then
             echo "No changes to deploy"
             exit 0
